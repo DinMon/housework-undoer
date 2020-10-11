@@ -6,8 +6,8 @@ body {
   margin: 0;
 }
 
-/* Task Card */
-.task-card {
+/* Card */
+.card {
   display: flex;
   width: 14rem;
   height: 14rem;
@@ -19,6 +19,7 @@ body {
   color: white;
 }
 
+/* Task Card */
 .reward {
   display: flex;
   justify-content: flex-end;
@@ -35,6 +36,88 @@ body {
   padding: 1.25rem 0.75rem;
   font-size: small;
   font-weight: 600;
+}
+
+/* Detail Task Card */
+.detail-task-card {
+  color: #555555;
+  box-shadow: -2px 4px 10px rgba(0, 0, 0, 0.15);
+  padding: 1rem;
+}
+
+.detail-task-title {
+  text-align: center;
+  line-height: 1.5rem;
+}
+
+.task-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 5.5rem;
+  padding: 0 0.5rem;
+}
+
+.task-option-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+
+  height: 100%;
+  
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.task-option-btn.cross-option {
+  font-weight: 200;
+}
+
+.task-option-btn.tick-option {
+  color: #FF8933;
+}
+
+.dash-circle-tick {
+  text-align: center;
+  position: relative;
+}
+
+.tick {
+  position: absolute;
+  top: 35%;
+  left: 25%;
+}
+
+.tick.tick-complete {
+  left: 35%;
+}
+
+.cross{
+  margin-top: 0.85rem;
+}
+
+/* Complete Card */
+.complete-card-container {
+  text-align: center;
+  margin-bottom: 1.25rem;
+}
+
+.text-emphasis {
+  color: #FF8933;
+  font-weight: 600;
+}
+
+.text-description {
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}
+
+/* TaskWrapper */
+.taskwrapper-container {
+  display: flex;
+  gap: 2rem;
 }
 
 /* Task Grid */

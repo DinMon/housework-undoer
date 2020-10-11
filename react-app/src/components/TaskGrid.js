@@ -1,7 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useContext } from 'react'
 import { createTask } from '../domain/Task'
 import { createTaskHolder, DESC } from '../domain/TaskHolder'
-import TaskCard from './TaskCard';
+import TaskWrapper from './TaskWrapper';
+
+const TaskHolderContext = React.createContext()
+
+export function useTaskHolder() {
+    return useContext(TaskHolderContext)
+}
 
 function TaskGrid({}) {
     const taskHolder = useRef(null)
@@ -16,19 +22,23 @@ function TaskGrid({}) {
             .add(createTask({ title: 'Fix the pillowcase', rewardPoints: 50 }))
             .add(createTask({ title: 'Water the plants', rewardPoints: 80 }))
             .sortBy(DESC)
-
-        const { tasks } = taskHolder.current
-        setTasks(tasks)
     }, [])
 
+    useEffect(() => {
+        console.log('complete')
+        setTasks(taskHolder.current.getTasks())
+    }, [taskHolder.current && taskHolder.current.getTasks()])
+
     return (
-        <div className='task-grid'>
-            {
-                tasks && tasks.map((task, i) => {
-                    return <TaskCard key={i} task={task}/>
-                })
-            }
-        </div>
+        <TaskHolderContext.Provider value={taskHolder.current}>
+            <div className='task-grid'>
+                {
+                    tasks && tasks.map((task, i) => {
+                        return <TaskWrapper key={i} task={task}/>
+                    })
+                }
+            </div>
+        </TaskHolderContext.Provider>
     )
 }
 
