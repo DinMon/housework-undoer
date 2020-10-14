@@ -1,27 +1,15 @@
-export const createTask = function userFactory({ title, taskId = undefined, rewardPoints = 0 }) {
-    let id = undefined
-    let isComplete = false
-    const colour = getColour(rewardPoints)
-
-    function setId(newId){
-        if (!taskId) {
-            id = newId
-        }
+export function createTask({id, title, rewardPoints}) {
+    return {
+        id,
+        title,
+        rewardPoints,
+        colour: getColour(rewardPoints),
+        isComplete: false
     }
+}
 
-    function getId() {
-        return id
-    }
-
-    function getIsComplete() {
-        return isComplete
-    }
-
-    const complete = function completeTask() {
-        isComplete = true
-    }
-
-    return { title, rewardPoints, colour, getId, getIsComplete, setId, complete }
+export function complete(task) {
+    return { ...task, isComplete: true}
 }
 
 function getColour(points) {

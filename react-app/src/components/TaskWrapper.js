@@ -1,13 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import TaskCard from './TaskCard'
 import QuestionCard from './QuestionCard'
 import CompletionCard from './CompletionCard'
-import { useTaskHolder } from './TaskGrid'
 
 
-function TaskWrapper({ task }) {
-    const taskHolder = useTaskHolder()
-
+function TaskWrapper({ task, completeTask }) {
     const [isOpen, setIsOpen] = useState(false)
 
     function handleCardClick() {
@@ -16,23 +13,20 @@ function TaskWrapper({ task }) {
 
     function handleChooseOption(isDone) {
         if (isDone) {
-            taskHolder.completeTask(task.getId())
+            completeTask(task);
         }
     }
 
-    useEffect(() => {
-        console.log(task.getIsComplete())
-    }, [task.getIsComplete()])
-
     return (
+
         <div className='taskwrapper-container'>
             <TaskCard task={task} onClick={handleCardClick} />
             {
-                isOpen && !task.getIsComplete() &&
+                isOpen && !task.isComplete &&
                     <QuestionCard taskTitle={task.title} onChooseOption={handleChooseOption}/>
             }
             {
-                isOpen && task.getIsComplete() &&
+                isOpen && task.isComplete &&
                     <CompletionCard points={task.rewardPoints}/>
             }
         </div>
