@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { complete, createTask } from '../domain/Task'
-import TaskWrapper from './TaskWrapper';
+import FlipTaskCard from './FlipTaskCard';
 
 const TaskHolderContext = React.createContext()
 
@@ -42,7 +42,7 @@ function TaskGrid({}) {
         <div className='task-grid'>
             {
                 tasks && tasks.map((task) => {
-                    return <TaskWrapper key={task.id} task={task} completeTask={completeTask} />
+                    return <FlipTaskCard key={task.id} task={task} completeTask={completeTask} />
                 })
             }
         </div>

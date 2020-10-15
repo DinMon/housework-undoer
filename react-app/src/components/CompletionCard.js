@@ -1,9 +1,9 @@
 import React from 'react'
 import Card from './Card'
 
-function CompletionCard({ points }) {
+function CompletionCard({ points, className = '', ...rest }) {
     return (
-        <Card colour='#FFE8DB' className='detail-task-card'>
+        <Card colour='#FFE8DB' className={`detail-task-card ${className}`} {...rest}>
             <div className='dash-circle-tick'>
                 <svg width="100" height="100" viewBox="0 0 66 66" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <circle cx="33" cy="33" r="32" stroke="#FF8933" strokeDasharray="5 5"/>

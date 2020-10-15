@@ -1,10 +1,10 @@
 import React from 'react'
 import Card from './Card'
 
-function QuestionCard({ taskTitle, onChooseOption }) {
+function QuestionCard({ taskTitle, onChooseOption, className = '' }) {
 
     return (
-        <Card colour='#FFE8DB' className='detail-task-card'>
+        <Card colour='#FFE8DB' className={`detail-task-card ${className}`}>
             <div className='detail-task-title'>Did you {taskTitle}?</div>
             <div className='task-options'>
                 <button className='task-option-btn cross-option' onClick={() => onChooseOption(false)}>
