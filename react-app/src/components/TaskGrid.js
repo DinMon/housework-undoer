@@ -9,7 +9,7 @@ export function useTaskHolder() {
     return useContext(TaskHolderContext)
 }
 
-function TaskGrid({}) {
+function TaskGrid() {
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
@@ -25,7 +25,6 @@ function TaskGrid({}) {
     }, []);
 
     function completeTask(completedTask) {
-
         const newTasks = tasks.map(function completeSingleTask(t) {
 
             if(t.id === completedTask.id) {
@@ -36,6 +35,16 @@ function TaskGrid({}) {
         })
 
         setTasks(newTasks);
+
+        function removeCompletedTask(taskList, id){
+            const filteredTasks = taskList.filter(function getNonCompletedTask(task) {
+                return task.id !== id
+            })  
+
+            setTasks(filteredTasks)  
+        }
+
+        setTimeout(() => removeCompletedTask(newTasks, completedTask.id), 1000)
     }
 
     return (
