@@ -152,3 +152,7 @@ body {
   padding: 1rem;
   gap: 2rem;
 }
+
+.u-hidden {
+  display: none;
+}

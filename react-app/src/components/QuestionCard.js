@@ -1,10 +1,10 @@
 import React from 'react'
 import Card from './Card'
 
-function QuestionCard({ taskTitle, onChooseOption, className = '' }) {
+const QuestionCard = React.forwardRef(({ taskTitle, onChooseOption, className = '' }, ref) => {
 
     return (
-        <Card colour='#FFE8DB' className={`detail-task-card ${className}`}>
+        <Card colour='#FFE8DB' className={`detail-task-card ${className}`} ref={ref}>
             <div className='detail-task-title'>Did you {taskTitle}?</div>
             <div className='task-options'>
                 <button className='task-option-btn cross-option' onClick={() => onChooseOption(false)}>
@@ -27,6 +27,6 @@ function QuestionCard({ taskTitle, onChooseOption, className = '' }) {
             </div>
         </Card>
     )
-}
+})
 
 export default QuestionCard

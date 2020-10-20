@@ -1,11 +1,11 @@
 import React from 'react'
 
-function Card({ children, colour, className, ...rest}) {
+const Card = React.forwardRef(({ children, colour, className, ...rest}, ref) => {
     return (
-        <div className={`card ${className}`} style={{ backgroundColor: colour }} {...rest}>
+        <div ref={ref} className={`card ${className}`} style={{ backgroundColor: colour }} {...rest}>
             {children}
         </div>
     )
-}
+});
 
 export default Card
