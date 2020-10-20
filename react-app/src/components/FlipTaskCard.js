@@ -1,40 +1,39 @@
-import React, { useState, useRef } from 'react'
+import React, { useState } from 'react'
 import TaskCard from './TaskCard'
 import QuestionCard from './QuestionCard'
 import CompletionCard from './CompletionCard'
-
+import ReactCardFlip from 'react-card-flip'
+import { CSSTransition } from 'react-transition-group'
+import { REMOVE_TASK_DELAY } from './TaskGrid'
 
 function FlipTaskCard({ task, completeTask }) {
-    const ref = useRef(null);
+    const [isFlip, setIsFlip] = useState(false)
+    const [isAboutRemove, setIsAboutRemove] = useState(false)
 
     function handleCardClick() {
-        ref.current.classList.add('card-flipped');
+        setIsFlip(!isFlip)
     }
 
     function handleChooseOption(isDone) {
         if (isDone) {
             completeTask(task);
+            setIsAboutRemove(true)
         } else {
-            // setIsFlip(!isFlip)
-            ref.current.classList.remove('card-flipped');
+            setIsFlip(!isFlip)
         }
     }
 
-
     return (
-        <div ref={ref} className='flip-card-container'>
-            <div className='flip-card-inner'>
-                {!task.isComplete && (
-                    <>
-                        <TaskCard task={task} onClick={handleCardClick} className='flip-card-front'/>
-                        <QuestionCard taskTitle={task.title} onChooseOption={handleChooseOption} className='flip-card-back' />
-                    </>
+        <CSSTransition in={isAboutRemove} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
+            <ReactCardFlip isFlipped={isFlip} flipDirection='horizontal' infinite={true}>
+                <TaskCard key='front' task={task} onClick={handleCardClick}/>
+                {(task.isComplete) ? (
+                    <CompletionCard key='back' points={task.rewardPoints} onClick={handleCardClick}/>
+                ) : (
+                    <QuestionCard key='back' taskTitle={task.title} onChooseOption={handleChooseOption}/>
                 )}
-                {(task.isComplete) && (
-                    <CompletionCard points={task.rewardPoints} className='flip-card-back' onClick={handleCardClick}/>
-                )}
-            </div>
-        </div>
+            </ReactCardFlip>
+        </CSSTransition>
     )
 }
 

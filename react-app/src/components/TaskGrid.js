@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid';
 import { complete, createTask } from '../domain/Task'
-import FlipTaskCard from './FlipTaskCard';
+import FlipTaskCard from './FlipTaskCard'
 
-const TaskHolderContext = React.createContext()
-
-export function useTaskHolder() {
-    return useContext(TaskHolderContext)
-}
+export const REMOVE_TASK_DELAY = 1000
 
 function TaskGrid() {
     const [tasks, setTasks] = useState([])
@@ -41,17 +37,20 @@ function TaskGrid() {
                 return task.id !== id
             })  
 
+            console.log(filteredTasks)
             setTasks(filteredTasks)  
         }
 
-        setTimeout(() => removeCompletedTask(newTasks, completedTask.id), 1000)
+        setTimeout(() => removeCompletedTask(newTasks, completedTask.id), REMOVE_TASK_DELAY)
     }
 
     return (
         <div className='task-grid'>
             {
                 tasks && tasks.map((task) => {
-                    return <FlipTaskCard key={task.id} task={task} completeTask={completeTask} />
+                    return (
+                        <FlipTaskCard key={task.id} task={task} completeTask={completeTask} />
+                    ) 
                 })
             }
         </div>
