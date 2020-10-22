@@ -1,12 +1,24 @@
-import React from 'react';
-import TaskGrid from './components/TaskGrid';
+import React, { useState } from 'react';
+import PageNavigator from './components/navigator/PageNavigator';
+import HistoryPage from './pages/HistoryPage';
+import TodayPage from './pages/TodayPage';
 
 function App() {
-  return (
-    <div>
-      <TaskGrid />
-    </div>
-  );
+	const [menuItems] = useState([
+		'Today\'s Housework',
+		'History'
+	])
+	
+	return (
+		<div>
+			<div className='page-navigator-container'>
+				<PageNavigator menuItems={menuItems}>
+					<TodayPage />
+					<HistoryPage />
+				</PageNavigator>
+			</div>
+		</div>
+	)
 }
 
 export default App;

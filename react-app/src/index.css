@@ -4,6 +4,7 @@
 
 body {
   margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Card */
@@ -132,6 +133,84 @@ body {
 .task-grid {
   display: flex;
   flex-wrap: wrap;
-  padding: 1rem;
-  gap: 2rem;
+  gap: 2.5rem;
+}
+
+/* Page Navigator */
+
+.page-navigator-container {
+  margin-top: 3rem;
+  margin-left: 2rem;
+}
+
+.nav-btn {
+  border: none;
+  border-bottom: 3px solid #cbd5e0;
+  padding-bottom: 0.25rem;
+  background: none;
+  font-size: medium;
+  font-family: inherit;
+  color: #2d3748;
+}
+
+.navbar .nav-btn:not(:first-child) {
+  margin-left: 1rem;
+}
+
+.nav-btn.selected {
+  border-bottom: 3px solid #2d3748;
+  font-weight: 600;
+}
+
+/* History Page */
+
+.no-task-found-bg {
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 75%;
+  height: 35rem;
+  margin: auto;
+  background-color: #FFE8DB;
+  margin-top: 2rem;
+}
+
+.no-task-found-description {
+  position: absolute;
+  font-size: 1.5rem;
+  top: 45%;
+  left: 25%;
+}
+
+.no-task-found-bg img {
+  margin-right: 3rem;
+}
+
+.date-task-grid:not(:first-child) {
+  margin-top: 2.5rem;
+}
+
+/* Today Page */
+
+.page {
+  margin-top: 2.5rem;
+  padding: 0 1rem;
+}
+
+/* Date Task Grid */
+
+.date-task-grid .task-grid {
+  margin-top: 1.75rem;
+}
+
+.date-description {
+  color: #2d3748;
+}
+
+.today-badge {
+  margin-right: 0.5rem;
+  padding: 0.4rem;
+  color: white;
+  background-color: #F95D66;
 }

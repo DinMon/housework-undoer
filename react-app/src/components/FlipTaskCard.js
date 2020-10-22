@@ -6,12 +6,24 @@ import ReactCardFlip from 'react-card-flip'
 import { CSSTransition } from 'react-transition-group'
 import { REMOVE_TASK_DELAY } from './TaskGrid'
 
-function FlipTaskCard({ task, completeTask }) {
-    const [isFlip, setIsFlip] = useState(false)
+function useCardFlip(isFlippable, isCardFlip) {
+    const [isFlip, setIsFlip] = useState(isCardFlip)
+
+    function flip() {
+        if (isFlippable) {
+            setIsFlip(!isFlip)
+        }
+    }
+    
+    return [isFlip, flip]
+}
+
+function FlipTaskCard({ task, completeTask, flippable = true }) {
+    const [isFlip, setIsFlip] = useCardFlip(flippable, false)
     const [isAboutRemove, setIsAboutRemove] = useState(false)
 
     function handleCardClick() {
-        setIsFlip(!isFlip)
+        setIsFlip(isFlip)
     }
 
     function handleChooseOption(isDone) {
@@ -22,6 +34,7 @@ function FlipTaskCard({ task, completeTask }) {
             setIsFlip(!isFlip)
         }
     }
+
 
     return (
         <CSSTransition in={isAboutRemove} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
