@@ -150,7 +150,8 @@ body {
   background: none;
   font-size: medium;
   font-family: inherit;
-  color: #2d3748;
+  color: #cbd5e0;
+  font-weight: 600;
 }
 
 .navbar .nav-btn:not(:first-child) {
@@ -158,8 +159,8 @@ body {
 }
 
 .nav-btn.selected {
+  color: #2d3748;
   border-bottom: 3px solid #2d3748;
-  font-weight: 600;
 }
 
 /* History Page */

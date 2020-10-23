@@ -6,15 +6,15 @@ import TaskGrid from '../components/TaskGrid';
 function TodayPage() {
     const [tasks, setTasks] = useState([])
 
-    useEffect(() => {
-        setTasks([
-            createTask({ id: uuidv4(), title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100 }),
-            createTask({ id: uuidv4(), title: 'Find dad\'s wallet', rewardPoints: 125 }),
-            createTask({ id: uuidv4(), title: 'Wash the dishes', rewardPoints: 75 }),
-            createTask({ id: uuidv4(), title: 'Make your bed in the morning', rewardPoints: 20 }),
-            createTask({ id: uuidv4(), title: 'Fix the pillowcase', rewardPoints: 50 }),
-            createTask({ id: uuidv4(), title: 'Water the plants', rewardPoints: 80 }),
-        ])
+    useEffect(async () => {
+        const url = 'https://us-central1-housework-60d78.cloudfunctions.net/getTodoTasks'
+        const response = await fetch(url)
+        console.log(response)
+        const todoTasks = await response.json()
+
+        setTasks(
+            todoTasks.map((task) => createTask(task))
+        )
     }, [])
 
     return (
