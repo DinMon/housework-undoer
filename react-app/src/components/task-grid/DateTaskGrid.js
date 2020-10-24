@@ -11,7 +11,6 @@ function DateTaskGrid({ unixTime, tasks}) {
         const newDate = day.format("dddd, MMMM D")
         setIsToday(moment().isSame(day, 'day'))
         setDate(newDate)
-        console.log(tasks)
     }, [unixTime])
 
     return (

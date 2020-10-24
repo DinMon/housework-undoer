@@ -24,3 +24,20 @@ exports.getTodoTasks = functions.https.onRequest((request, response) => {
         response.json(tasks)
     })
 });
+
+exports.getUsers = functions.https.onRequest((request, response) => {
+    cors(request, response, async () => {
+        const data = await db.collection('users').get()
+        let users = []
+        data.forEach((doc) => {
+            id = doc.id
+            users = [...users, {
+                id: doc.id,
+                name: doc.data().name,
+                age: doc.data().age,
+                role: doc.data().role
+            }]
+        })
+        response.json(users)
+    })
+});

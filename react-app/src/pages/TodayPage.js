@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react'
-import { v4 as uuidv4 } from 'uuid';
 import { createTask } from '../domain/Task'
-import TaskGrid from '../components/TaskGrid';
+import TaskGrid from '../components/task-grid/TaskGrid';
 
 function TodayPage() {
     const [tasks, setTasks] = useState([])
 
-    useEffect(async () => {
-        const url = 'https://us-central1-housework-60d78.cloudfunctions.net/getTodoTasks'
-        const response = await fetch(url)
-        console.log(response)
-        const todoTasks = await response.json()
+    useEffect(() => {
+        async function fetchTasks() {
+            const url = 'https://us-central1-housework-60d78.cloudfunctions.net/getTodoTasks'
+            const response = await fetch(url)
+            const todoTasks = await response.json()
 
-        setTasks(
-            todoTasks.map((task) => createTask(task))
-        )
+            setTasks(
+                todoTasks.map((task) => createTask(task))
+            )
+        }
+        fetchTasks()
     }, [])
 
     return (

@@ -4,7 +4,7 @@ import QuestionCard from './QuestionCard'
 import CompletionCard from './CompletionCard'
 import ReactCardFlip from 'react-card-flip'
 import { CSSTransition } from 'react-transition-group'
-import { REMOVE_TASK_DELAY } from './TaskGrid'
+import { REMOVE_TASK_DELAY } from '../task-grid/TaskGrid'
 
 function useCardFlip(isFlippable, isCardFlip) {
     const [isFlip, setIsFlip] = useState(isCardFlip)

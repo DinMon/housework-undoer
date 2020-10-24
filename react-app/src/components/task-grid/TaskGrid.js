@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { complete } from '../domain/Task'
-import FlipTaskCard from './FlipTaskCard'
+import { complete } from '../../domain/Task'
+import FlipTaskCard from '../task-card/FlipTaskCard'
 
 export const REMOVE_TASK_DELAY = 1000
 
