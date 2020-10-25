@@ -5,7 +5,7 @@ import DashboardPage from './pages/DashboardPage';
 
 const UserLoginContext = React.createContext(null)
 
-export function useUser() {
+export function useUserLogged() {
 	return useContext(UserLoginContext)
 }
 

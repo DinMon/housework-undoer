@@ -126,7 +126,7 @@ body {
 
 .remove-fade-enter-active {
   opacity: 0;
-  transition: opacity 1000ms; /* delay fade in card removal */
+  transition: opacity 2000ms; /* delay fade in card removal */
 }
 
 /* Task Grid */

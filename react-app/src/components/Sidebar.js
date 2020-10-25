@@ -1,11 +1,11 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
-import { useUser } from '../App'
+import { useUserLogged } from '../App'
 import CardAvatar from './CardAvatar'
 
 function Sidebar() {
     const history = useHistory()
-    const { userLoggedIn, signUserOut } = useUser()
+    const { userLoggedIn, signUserOut } = useUserLogged()
 
     function signOut() {
         signUserOut()

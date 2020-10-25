@@ -41,3 +41,32 @@ exports.getUsers = functions.https.onRequest((request, response) => {
         response.json(users)
     })
 });
+
+exports.completeTask = functions.https.onRequest((request, response) => {
+    cors(request, response, async () => {
+        const task = JSON.parse(request.body)
+        try {
+            const { id , completedBy } = task
+            if (!id) {
+                response.status(400).json(getError('No task Id found!'))
+            } else if(!completedBy) {
+                response.status(400).json(getError('The person who completed the task is not found!'))
+            }
+            await db.collection('tasks').doc(task.id).update({
+                isComplete: true,
+                completedBy: task.completedBy,
+                completedDate: admin.firestore.FieldValue.serverTimestamp()
+            })
+            response.status(201).end()
+        } catch (err) {
+            response.status(400).end()
+            console.error(err)
+        }
+    })
+});
+
+function getError(err) {
+    return {
+        error: err
+    }
+}

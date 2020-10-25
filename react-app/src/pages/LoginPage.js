@@ -9,8 +9,7 @@ function LoginPage({ logUserIn }) {
 
     useEffect(() => {
         async function fetchUsers() {
-            const url = 'https://us-central1-housework-60d78.cloudfunctions.net/getUsers'
-            const response = await fetch(url)
+            const response = await fetch('https://us-central1-housework-60d78.cloudfunctions.net/getUsers')
             const fetchedUsers = await response.json()
 
             setUsers(

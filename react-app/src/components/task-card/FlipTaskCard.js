@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import TaskCard from './TaskCard'
 import QuestionCard from './QuestionCard'
 import CompletionCard from './CompletionCard'
@@ -20,7 +20,6 @@ function useCardFlip(isFlippable, isCardFlip) {
 
 function FlipTaskCard({ task, completeTask, flippable = true }) {
     const [isFlip, setIsFlip] = useCardFlip(flippable, false)
-    const [isAboutRemove, setIsAboutRemove] = useState(false)
 
     function handleCardClick() {
         setIsFlip(isFlip)
@@ -29,15 +28,13 @@ function FlipTaskCard({ task, completeTask, flippable = true }) {
     function handleChooseOption(isDone) {
         if (isDone) {
             completeTask(task);
-            setIsAboutRemove(true)
         } else {
             setIsFlip(!isFlip)
         }
     }
 
-
     return (
-        <CSSTransition in={isAboutRemove} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
+        <CSSTransition in={task.isComplete} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
             <ReactCardFlip isFlipped={isFlip} flipDirection='horizontal' infinite={true}>
                 <TaskCard key='front' task={task} onClick={handleCardClick}/>
                 {(task.isComplete) ? (

@@ -7,8 +7,7 @@ function TodayPage() {
 
     useEffect(() => {
         async function fetchTasks() {
-            const url = 'https://us-central1-housework-60d78.cloudfunctions.net/getTodoTasks'
-            const response = await fetch(url)
+            const response = await fetch('https://us-central1-housework-60d78.cloudfunctions.net/getTodoTasks')
             const todoTasks = await response.json()
 
             setTasks(
