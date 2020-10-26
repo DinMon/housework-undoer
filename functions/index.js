@@ -61,8 +61,45 @@ exports.completeTask = functions.https.onRequest((request, response) => {
     })
 });
 
+exports.getOneWeekTasksHistory = functions.https.onRequest((request, response) => {
+    cors(request, response, async () => {
+        const userId = request.query.userId
+        const taskHistoryDocs = await db.collection('tasks-history').limit(7).get()
+        let taskHistoryWithIds = {}
+        taskHistoryDocs.forEach((doc) => {
+            const taskIds = doc.data().taskIds || []
+            taskHistoryWithIds = {
+                ...taskHistoryWithIds,
+                [doc.id]: taskIds
+            }
+        }, {})
+        const taskHistoryWithTask = Object.assign({}, 
+            ...await Promise.all(Object.keys(taskHistoryWithIds).map(
+                async (unixTime) => ({[unixTime]: await getAllTasks(userId, taskHistoryWithIds[unixTime])})
+            )))
+        response.json(taskHistoryWithTask)
+    })
+});
+
+async function getAllTasks(userId, ids) {
+    if (Array.isArray(ids)) {
+        if (ids.length > 0) {
+            const refs = ids.map(id => db.doc(`tasks/${id}`))
+            const taskDocs = await db.getAll(...refs)
+            return taskDocs.reduce((tasks, doc) => {
+                const task = doc.data()
+                if (task.completedBy === userId) {
+                    return [...tasks, task]
+                }
+                return tasks
+            }, [])
+        }
+    }
+    return []
+}
+
 async function saveCompletedTask(task) {
-    const { _writeTime: { _seconds } }= await db.collection('tasks').doc(task.id).update({
+    const { _writeTime: { _seconds } } = await db.collection('tasks').doc(task.id).update({
         isComplete: true,
         completedBy: task.completedBy,
         completedDate: admin.firestore.FieldValue.serverTimestamp()
