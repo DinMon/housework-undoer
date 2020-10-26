@@ -99,6 +99,35 @@ body {
   margin-top: 0.85rem;
 }
 
+.rotate {
+  animation: rotation 3s infinite linear;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
+}
+
+.pulse {
+  animation: pulse 0.8s infinite linear;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1.0);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1.0);
+  }
+}
+
 /* Complete Card */
 .complete-card-container {
   text-align: center;

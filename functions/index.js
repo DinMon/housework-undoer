@@ -52,11 +52,7 @@ exports.completeTask = functions.https.onRequest((request, response) => {
             } else if(!completedBy) {
                 response.status(400).json(getError('The person who completed the task is not found!'))
             }
-            await db.collection('tasks').doc(task.id).update({
-                isComplete: true,
-                completedBy: task.completedBy,
-                completedDate: admin.firestore.FieldValue.serverTimestamp()
-            })
+            await saveCompletedTask(task)
             response.status(201).end()
         } catch (err) {
             response.status(400).end()
@@ -64,6 +60,25 @@ exports.completeTask = functions.https.onRequest((request, response) => {
         }
     })
 });
+
+async function saveCompletedTask(task) {
+    const { _writeTime: { _seconds } }= await db.collection('tasks').doc(task.id).update({
+        isComplete: true,
+        completedBy: task.completedBy,
+        completedDate: admin.firestore.FieldValue.serverTimestamp()
+    })
+    const startDayTime = String(_seconds - _seconds % (60 * 60 * 24))
+    const historyDate = await db.collection('tasks-history').doc(startDayTime).get()
+    if (historyDate.exists) {
+        await db.collection('tasks-history').doc(startDayTime).update({
+            taskIds: admin.firestore.FieldValue.arrayUnion(task.id)
+        })
+    } else {
+        await db.collection('tasks-history').doc(startDayTime).set({
+            taskIds: admin.firestore.FieldValue.arrayUnion(task.id)
+        })
+    }
+}
 
 function getError(err) {
     return {
