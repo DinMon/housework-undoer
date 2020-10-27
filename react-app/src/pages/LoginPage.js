@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { createUser, ADMIN_USER } from '../domain/User'
 import RoundedAvatar from '../components/RoundedAvatar'
+import LoadingAnimation from '../components/LoadingAnimation'
 
 function LoginPage({ logUserIn }) {
     const history = useHistory()
     const [users, setUsers] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         async function fetchUsers() {
@@ -15,6 +17,7 @@ function LoginPage({ logUserIn }) {
             setUsers(
                 fetchedUsers.map((user) => createUser(user))
             )
+            setIsLoading(false)
         }
         fetchUsers()
     }, [])
@@ -31,10 +34,14 @@ function LoginPage({ logUserIn }) {
     return (
         <div className='login-page'>
             <div className='login-page-main'>
-                <div className='users-container'>
-                    {users && users.map((user) =>
-                        (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}/>))}
-                </div>
+                {isLoading ? (
+                    <LoadingAnimation />
+                ): (
+                    <div className='users-container'>
+                        {users && users.map((user) =>
+                            (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}/>))}
+                    </div>
+                )}
             </div>
             <div className='login-side-img'></div>
         </div>

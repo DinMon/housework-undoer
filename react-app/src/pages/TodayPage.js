@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { createTask } from '../domain/Task'
 import TaskGrid from '../components/task-grid/TaskGrid';
+import Page from '../components/Page';
+import NoTaskFound from '../components/NoTaskFound';
 
 function TodayPage() {
     const [tasks, setTasks] = useState([])
+    const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
         async function fetchTasks() {
@@ -13,14 +16,19 @@ function TodayPage() {
             setTasks(
                 todoTasks.map((task) => createTask(task))
             )
+            setIsLoading(false)
         }
         fetchTasks()
     }, [])
 
     return (
-        <div className='page'>
-            <TaskGrid tasks={tasks}/>
-        </div>
+        <Page isLoading={isLoading}>
+            {(tasks.length > 0) ? (
+                <TaskGrid tasks={tasks}/>
+            ) : (
+                <NoTaskFound description={`There are no tasks to complete yet. But there's a cat`}/>
+            )}
+        </Page>
     )
 }
 

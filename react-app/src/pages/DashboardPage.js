@@ -8,7 +8,7 @@ function DashboardPage() {
     return (
         <div className='dashboard-page'>
             <Sidebar />
-            <div>
+            <div className='dashboard-inner'>
                 <div>
                     <PageNavigator menuItems={['Today\'s Housework', 'History']}>
                         <TodayPage />

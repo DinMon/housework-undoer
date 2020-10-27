@@ -1,31 +1,55 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import CatImg from '../assets/cat.svg'
 import DateTaskGrid from '../components/task-grid/DateTaskGrid'
+import { useUserLogged } from '../App'
+import { createTask } from '../domain/Task'
+import Page from '../components/Page'
+import NoTaskFound from '../components/NoTaskFound'
 
 function HistoryPage() {
-    const [tasksByDate, setTasksByDate] = useState({
-        1603355613: [
-            { id: 0, title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100, completedDate: new Date(), colour: '#FF467D' },
-            { id: 1, title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100, completedDate: new Date(), colour: '#FF467D' },
-        ],
-        1602355613: [
-            { id: 2, title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100, completedDate: new Date(), colour: '#FF467D' },
-            { id: 3, title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100, completedDate: new Date(), colour: '#FF467D' },
-        ]
-    })
+    const { userLoggedIn } = useUserLogged()
+    const [tasksByDate, setTasksByDate] = useState({})
+    const [isLoading, setIsLoading] = useState(true)
+
+    useEffect(() => {
+        const url = new URL('https://us-central1-housework-60d78.cloudfunctions.net/getOneWeekTasksHistory')
+        url.searchParams.set('userId', userLoggedIn.id)
+
+        async function fetchTaskHistory(searchUrl) {
+            const response = await fetch(searchUrl)
+            const taskHistory = await response.json()
+            setTasksByDate(
+                GenerateNewTasksFromHistory(taskHistory)
+            )
+            setIsLoading(false)
+        }
+
+        fetchTaskHistory(url)
+    }, [userLoggedIn])
+
+    function GenerateNewTasksFromHistory(taskHistory) {
+        if (taskHistory) {
+            const newTaskHistory = Object.keys(taskHistory).sort((a, b) => b - a).reduce((taskAcc, key) => {
+                const taskList = taskHistory[key] || []
+                if (taskList.length > 0) {
+                    const newTaskList = taskList.map(task => createTask(task)) 
+                    return {...taskAcc, [key]: newTaskList}
+                }
+                return taskAcc
+            }, {})
+            return newTaskHistory
+        }
+        return Object.assign({})
+    }
+
 
     return (
-        <div className='page'>
-            {tasksByDate && Object.keys(tasksByDate).length === 0 &&
-            <div className='no-task-found-bg'>
-                <div className='no-task-found-description'>There are no finished tasks yet. But there's a cat</div>
-                <img src={CatImg} alt='cat illustration' />
-            </div>}
+        <Page isLoading={isLoading}>
+            {tasksByDate && Object.keys(tasksByDate).length === 0 && <NoTaskFound description={`There are no finished tasks yet. But there's a cat`}/>}
             {tasksByDate && Object.keys(tasksByDate).sort((a, b) => b - a).map((key) => (
                 <DateTaskGrid key={uuidv4()} unixTime={key} tasks={tasksByDate[key]}/>
             ))}
-        </div>
+        </Page>
     )
 }
 

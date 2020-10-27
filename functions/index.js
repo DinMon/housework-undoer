@@ -89,7 +89,7 @@ async function getAllTasks(userId, ids) {
             return taskDocs.reduce((tasks, doc) => {
                 const task = doc.data()
                 if (task.completedBy === userId) {
-                    return [...tasks, task]
+                    return [...tasks, {...task, id: doc.id }]
                 }
                 return tasks
             }, [])
