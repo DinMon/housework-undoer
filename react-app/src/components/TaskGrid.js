@@ -24,7 +24,7 @@ function TaskGrid() {
         const newTasks = tasks.map(function completeSingleTask(t) {
 
             if(t.id === completedTask.id) {
-                t = complete(t)
+                return complete(t)
             }
 
             return t
