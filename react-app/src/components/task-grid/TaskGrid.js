@@ -7,7 +7,7 @@ import firebase from '../../firebase'
 export const REMOVE_TASK_DELAY = 2000
 
 function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
-    const { userLoggedIn } = useUserLogged()
+    const { userLoggedIn, setUserLoggedIn } = useUserLogged()
     const [taskGridtasks, setTaskGridTasks] = useState([])
     const [completedTask, setCompletedTask] = useState(null)
 
@@ -32,9 +32,23 @@ function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
                     completedBy: task.completedBy,
                     completedDate: firebase.firestore.FieldValue.serverTimestamp()
                 })
+            const totalHelpCoins = userLoggedIn.coins + task.rewardPoints
+            updateHelpCoins(totalHelpCoins)
+            
         } catch (err) {
             console.log(err)
         }
+    }
+
+    function updateHelpCoins(amount) {
+        firebase
+            .firestore()
+            .collection('users')
+            .doc(userLoggedIn.id)
+            .update({
+                coins: amount
+            })
+        setUserLoggedIn({ ...userLoggedIn, coins: amount})
     }
 
     function completeTask(task) {
