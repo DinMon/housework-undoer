@@ -64,57 +64,41 @@ exports.completeTask = functions.https.onRequest((request, response) => {
 exports.getOneWeekTasksHistory = functions.https.onRequest((request, response) => {
     cors(request, response, async () => {
         const userId = request.query.userId
-        const taskHistoryDocs = await db.collection('tasks-history').limit(7).get()
-        let taskHistoryWithIds = {}
-        taskHistoryDocs.forEach((doc) => {
-            const taskIds = doc.data().taskIds || []
-            taskHistoryWithIds = {
-                ...taskHistoryWithIds,
-                [doc.id]: taskIds
+        if (userId) {
+            try {
+                const oneWeekInSec = 604800000
+                const lastWeekUnixTime = Date.now() - oneWeekInSec
+                const taskDocs = await db.collection('tasks')
+                    .where('completedBy', '==', userId)
+                    .where('isComplete', '==', true)
+                    .where('completedDate', '>=', new Date(lastWeekUnixTime))
+                    .get()
+                let taskHistory = {}
+                taskDocs.forEach((doc) => {
+                    const { _seconds } = doc.data().completedDate
+                    const startDayTime = String(_seconds - _seconds % (60 * 60 * 24))
+                    taskHistory = {
+                        ...taskHistory,
+                        [startDayTime]: (taskHistory[startDayTime]) ? [...taskHistory[startDayTime], doc.data()] : [doc.data()]
+                    }
+                })
+                response.json(taskHistory)
+            } catch (err) {
+                response.status(500).end()
+                console.error(err)
             }
-        }, {})
-        const taskHistoryWithTask = Object.assign({}, 
-            ...await Promise.all(Object.keys(taskHistoryWithIds).map(
-                async (unixTime) => ({[unixTime]: await getAllTasks(userId, taskHistoryWithIds[unixTime])})
-            )))
-        response.json(taskHistoryWithTask)
+        } else {
+            response.status(400).end()
+        }
     })
 });
 
-async function getAllTasks(userId, ids) {
-    if (Array.isArray(ids)) {
-        if (ids.length > 0) {
-            const refs = ids.map(id => db.doc(`tasks/${id}`))
-            const taskDocs = await db.getAll(...refs)
-            return taskDocs.reduce((tasks, doc) => {
-                const task = doc.data()
-                if (task.completedBy === userId) {
-                    return [...tasks, {...task, id: doc.id }]
-                }
-                return tasks
-            }, [])
-        }
-    }
-    return []
-}
-
 async function saveCompletedTask(task) {
-    const { _writeTime: { _seconds } } = await db.collection('tasks').doc(task.id).update({
+    await db.collection('tasks').doc(task.id).update({
         isComplete: true,
         completedBy: task.completedBy,
         completedDate: admin.firestore.FieldValue.serverTimestamp()
     })
-    const startDayTime = String(_seconds - _seconds % (60 * 60 * 24))
-    const historyDate = await db.collection('tasks-history').doc(startDayTime).get()
-    if (historyDate.exists) {
-        await db.collection('tasks-history').doc(startDayTime).update({
-            taskIds: admin.firestore.FieldValue.arrayUnion(task.id)
-        })
-    } else {
-        await db.collection('tasks-history').doc(startDayTime).set({
-            taskIds: admin.firestore.FieldValue.arrayUnion(task.id)
-        })
-    }
 }
 
 function getError(err) {

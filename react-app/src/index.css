@@ -206,6 +206,7 @@ body {
 /* Rounded Avatar */
 .avatar {
   text-align: center;
+  cursor: pointer;
 }
 
 .avatar img {
@@ -287,6 +288,8 @@ body {
   background: none;
   border: none;
   padding: 0;
+
+  cursor: pointer;
 }
 
 .leave-btn img {
