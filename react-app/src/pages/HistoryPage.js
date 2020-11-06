@@ -5,6 +5,7 @@ import { useUserLogged } from '../App'
 import { createTask } from '../domain/Task'
 import Page from '../components/Page'
 import NoTaskFound from '../components/NoTaskFound'
+import firebase from '../firebase'
 
 function HistoryPage() {
     const { userLoggedIn } = useUserLogged()
@@ -12,36 +13,33 @@ function HistoryPage() {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        const url = new URL('https://us-central1-housework-60d78.cloudfunctions.net/getOneWeekTasksHistory')
-        url.searchParams.set('userId', userLoggedIn.id)
-
-        async function fetchTaskHistory(searchUrl) {
-            const response = await fetch(searchUrl)
-            const taskHistory = await response.json()
-            setTasksByDate(
-                GenerateNewTasksFromHistory(taskHistory)
-            )
-            setIsLoading(false)
+        function fetchTaskHistory() {
+            const oneWeekInSec = 604800000
+            const lastWeekUnixTime = Date.now() - oneWeekInSec
+            firebase
+                .firestore()
+                .collection('tasks')
+                .where('completedBy', '==', userLoggedIn.id)
+                .where('isComplete', '==', true)
+                .where('completedDate', '>=', new Date(lastWeekUnixTime))
+                .orderBy('completedDate', 'desc')
+                .onSnapshot((snapshot) => {
+                    const taskHistory = snapshot.docs.reduce((taskHistory, doc) => {
+                        const { seconds } = doc.data().completedDate
+                        const startDayTime = String(seconds - seconds % (60 * 60 * 24))
+                        const task = createTask({ id: doc.id, ...doc.data()})
+                        return {
+                            ...taskHistory,
+                            [startDayTime]: (taskHistory[startDayTime]) ? [...taskHistory[startDayTime], task] : [task]
+                        }
+                    }, {})
+                    setTasksByDate(taskHistory)
+                    setIsLoading(false)
+                })
         }
 
-        fetchTaskHistory(url)
+        fetchTaskHistory()
     }, [userLoggedIn])
-
-    function GenerateNewTasksFromHistory(taskHistory) {
-        if (taskHistory) {
-            const newTaskHistory = Object.keys(taskHistory).sort((a, b) => b - a).reduce((taskAcc, key) => {
-                const taskList = taskHistory[key] || []
-                if (taskList.length > 0) {
-                    const newTaskList = taskList.map(task => createTask(task)) 
-                    return {...taskAcc, [key]: newTaskList}
-                }
-                return taskAcc
-            }, {})
-            return newTaskHistory
-        }
-        return Object.assign({})
-    }
-
 
     return (
         <Page isLoading={isLoading}>

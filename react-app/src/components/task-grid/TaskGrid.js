@@ -2,61 +2,66 @@ import React, { useEffect, useState } from 'react'
 import { complete } from '../../domain/Task'
 import FlipTaskCard from '../task-card/FlipTaskCard'
 import { useUserLogged } from '../../App'
+import firebase from '../../firebase'
 
 export const REMOVE_TASK_DELAY = 2000
 
-function TaskGrid({ tasks, flippableTask = true, className = '' }) {
+function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
     const { userLoggedIn } = useUserLogged()
     const [taskGridtasks, setTaskGridTasks] = useState([])
+    const [completedTask, setCompletedTask] = useState(null)
 
     useEffect(() => {
-        setTaskGridTasks(tasks)
+        if (!completedTask) {
+            setTaskGridTasks(tasks)
+        } else {
+            if (tasks.includes(completedTask)) {
+                setTaskGridTasks(tasks)
+            }
+        }
     }, [tasks])
 
-    async function syncCompletedTask(task) {
+    function syncCompletedTask(task) {
         try {
-            const response = await fetch('https://us-central1-housework-60d78.cloudfunctions.net/completeTask', {
-                method: 'POST',
-                body: JSON.stringify(task)
-            })
-            if (!response.ok) {
-                const errorMsg = await response.json()
-                console.error(errorMsg)
-                return false
-            }
+            firebase
+                .firestore()
+                .collection('tasks')
+                .doc(task.id)
+                .update({
+                    isComplete: true,
+                    completedBy: task.completedBy,
+                    completedDate: firebase.firestore.FieldValue.serverTimestamp()
+                })
         } catch (err) {
-            console.error(err)
-            return false
+            console.log(err)
         }
-        return true
     }
 
-    async function completeTask(completedTask) {
-        let taskCompletedSuccess = false
-        const newTasks = await Promise.all(taskGridtasks.map(async function completeSingleTask(t) {
+    function completeTask(task) {
+        setCompletedTask(task)
+        const newTasks = taskGridtasks.map(function completeSingleTask(t) {
 
-            if(t.id === completedTask.id) {
+            if (t.id === task.id) {
                 const newCompletedTask = complete(t, userLoggedIn && userLoggedIn.id)
-                taskCompletedSuccess = await syncCompletedTask(newCompletedTask)
-                t = taskCompletedSuccess ? newCompletedTask : t
+                syncCompletedTask(newCompletedTask)
+                return newCompletedTask
             }
 
             return t
-        }))
+        })
 
-        if (taskCompletedSuccess) {
-            setTaskGridTasks(newTasks);
+        setTaskGridTasks(newTasks)  
 
-            setTimeout(() => removeCompletedTask(newTasks, completedTask.id), REMOVE_TASK_DELAY)
-        }
+        setTimeout(() => removeCompletedTask(newTasks, task.id), REMOVE_TASK_DELAY)
+    }
 
-        function removeCompletedTask(taskList, id){
-            const filteredTasks = taskList.filter(function getNonCompletedTask(task) {
-                return task.id !== id
-            })  
+    function removeCompletedTask(taskList, id){
+        const filteredTasks = taskList.filter(function getNonCompletedTask(task) {
+            return task.id !== id
+        })  
 
-            setTaskGridTasks(filteredTasks)  
-        }
+        setCompletedTask(null)
+        setTaskGridTasks(filteredTasks)  
     }
 
     return (

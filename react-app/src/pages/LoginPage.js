@@ -3,6 +3,7 @@ import { useHistory } from 'react-router-dom'
 import { createUser, ADMIN_USER } from '../domain/User'
 import RoundedAvatar from '../components/RoundedAvatar'
 import LoadingAnimation from '../components/LoadingAnimation'
+import firebase from 'firebase'
 
 function LoginPage({ logUserIn }) {
     const history = useHistory()
@@ -10,14 +11,18 @@ function LoginPage({ logUserIn }) {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(() => {
-        async function fetchUsers() {
-            const response = await fetch('https://us-central1-housework-60d78.cloudfunctions.net/getUsers')
-            const fetchedUsers = await response.json()
-
-            setUsers(
-                fetchedUsers.map((user) => createUser(user))
-            )
-            setIsLoading(false)
+        function fetchUsers() {
+            firebase
+                .firestore()
+                .collection('users')
+                .onSnapshot((snapshot) => {
+                    const fetchedUsers = snapshot.docs.map((doc) => createUser({
+                        id: doc.id,
+                        ...doc.data()
+                    }))
+                    setUsers(fetchedUsers)
+                    setIsLoading(false)
+                })
         }
         fetchUsers()
     }, [])
