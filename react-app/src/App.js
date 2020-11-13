@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import PasswordAvatar from './components/PasswordAvatar';
 
 const UserLoginContext = React.createContext(null)
 
@@ -31,7 +32,7 @@ function App() {
 						<LoginPage logUserIn={setUserLoggedIn}/>
 					</Route>
 					<Route path='/secure-login'>
-						<div>Password</div>
+						<PasswordAvatar />
 					</Route>
 				</Switch>
 			</UserLoginContext.Provider>

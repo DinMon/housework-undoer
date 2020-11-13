@@ -233,6 +233,77 @@ body {
   color: #555555;
 }
 
+/* Password Avatar */
+.password-avatar-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.default-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.back-arrow-btn {
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-top: -3.5rem;
+  margin-left: -1rem;
+  cursor: pointer;
+}
+
+.password-form {
+  margin-top: 1rem;
+}
+
+.textbox {
+  width: 16rem;
+  height: 2.25rem;
+  border: 2px solid #555555;
+}
+
+.password-textbox {
+  padding: 0 1rem;
+  padding-right: 2rem;
+  letter-spacing: 0.2em;
+  font-size: 0.75rem;
+}
+
+.sign-in-container {
+  display: flex;
+  align-items: center;
+  margin-top: 3rem;
+}
+
+.sign-in-container .btn{
+  margin-left: 1rem;
+}
+
+.password-textbox-container {
+  position: relative;
+}
+
+.show-password-btn { 
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin-top: 0.75rem;
+  margin-right: 0.5rem;
+  opacity: 0.6;
+}
+
+.show-password-btn:hover { 
+  opacity: 1;
+}
+
+.show-password-btn .visible { 
+  opacity: 1;
+}
+
 /* Sidebar */
 
 .sidebar {
@@ -274,14 +345,17 @@ body {
   font-weight: 300;
 }
 
-.help-point-btn {
-  margin-top: 0.25rem;
-  padding: 0.5rem 0.5rem;
-  color: white;
+.btn {
+  height: 2.25rem;
   font-size: inherit;
-  font-weight: 600;
   background-color: #FF8933;
   border: none;
+  color: white;
+}
+
+.help-point-btn {
+  margin-top: 0.25rem;
+  font-weight: 600;
 }
 
 .leave-btn {
