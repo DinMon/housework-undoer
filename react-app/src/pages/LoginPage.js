@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import { createUser, ADMIN_USER } from '../domain/User'
 import RoundedAvatar from '../components/RoundedAvatar'
 import LoadingAnimation from '../components/LoadingAnimation'
-import firebase from 'firebase'
+import firebase from '../firebase'
 import PasswordAvatar from '../components/PasswordAvatar';
+import { signIn } from '../api/authentication/authenticateUser'
 
-function LoginPage({ logUserIn }) {
-    const history = useHistory()
+function LoginPage() {
     const [users, setUsers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [adminUser, setAdminUser] = useState(null)
@@ -37,9 +36,8 @@ function LoginPage({ logUserIn }) {
         }
     }
 
-    function logUser(user) {
-        history.replace('/')
-        logUserIn(user)
+    async function logUser(user) {
+        await signIn(user)
     }
 
     return (

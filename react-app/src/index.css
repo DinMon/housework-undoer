@@ -239,6 +239,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: 50%;
 }
 
 .default-btn {
@@ -277,6 +278,7 @@ body {
   display: flex;
   align-items: center;
   margin-top: 3rem;
+  justify-content: center;
 }
 
 .sign-in-container .btn{
@@ -302,6 +304,13 @@ body {
 
 .show-password-btn .visible { 
   opacity: 1;
+}
+
+.form-error {
+  width: 21rem;
+  padding: 0.5rem 0.25rem;
+  color: #FF8933;
+  font-size: 0.85rem;
 }
 
 /* Sidebar */
