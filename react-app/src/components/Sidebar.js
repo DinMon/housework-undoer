@@ -1,7 +1,8 @@
 import React from 'react'
 import { useHistory } from 'react-router-dom'
 import { useUserLogged } from '../App'
-import CardAvatar from './CardAvatar'
+import CardAvatarWrapper from './CardAvatarWrapper'
+import PasswordCard from './PasswordCard'
 
 function Sidebar() {
     const history = useHistory()
@@ -14,7 +15,9 @@ function Sidebar() {
 
     return (
         <div className='sidebar'>
-            <CardAvatar user={userLoggedIn} onSignOut={signOut}/>
+            <CardAvatarWrapper user={userLoggedIn} signOut={signOut}>
+                <PasswordCard />
+            </CardAvatarWrapper>
         </div>
     )
 }

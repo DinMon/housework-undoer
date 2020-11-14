@@ -10,6 +10,7 @@ function LoginPage() {
     const [users, setUsers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
     const [adminUser, setAdminUser] = useState(null)
+    const [signingUserId, setSigningUserId] = useState('')
 
     useEffect(() => {
         function fetchUsers() {
@@ -37,7 +38,9 @@ function LoginPage() {
     }
 
     async function logUser(user) {
+        setSigningUserId(user.id)
         await signIn(user)
+        setSigningUserId('')
     }
 
     return (
@@ -51,7 +54,8 @@ function LoginPage() {
                     ) : (
                         <div className='users-container'>
                             {users && users.map((user) =>
-                                (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}/>))}
+                                (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}
+                                 isLoading={user.id === signingUserId}/>))}
                         </div>
                     )
                 )}
