@@ -4,7 +4,6 @@ import CardAvatar from './CardAvatar'
 function CardAvatarWrapper({children, user, signOut}) {
     const [open, setOpen] = useState(false)
 
-
     return (
         <div className='card-avatar-wrapper'>
             <CardAvatar user={user} onInteract={() => setOpen(true)} onSignOut={signOut}/>

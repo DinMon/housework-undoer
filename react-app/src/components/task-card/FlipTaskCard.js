@@ -5,6 +5,7 @@ import CompletionCard from './CompletionCard'
 import ReactCardFlip from 'react-card-flip'
 import { CSSTransition } from 'react-transition-group'
 import { REMOVE_TASK_DELAY } from '../task-grid/TaskGrid'
+import EditTaskCard from './EditTaskCard'
 
 function useCardFlip(isFlippable, isCardFlip) {
     const [isFlip, setIsFlip] = useState(isCardFlip)
@@ -18,7 +19,7 @@ function useCardFlip(isFlippable, isCardFlip) {
     return [isFlip, flip]
 }
 
-function FlipTaskCard({ task, completeTask, flippable = true }) {
+function FlipTaskCard({ task, completeTask, isEditCard, flippable = true }) {
     const [isFlip, setIsFlip] = useCardFlip(flippable, false)
 
     function handleCardClick() {
@@ -37,10 +38,14 @@ function FlipTaskCard({ task, completeTask, flippable = true }) {
         <CSSTransition in={task.isComplete} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
             <ReactCardFlip isFlipped={isFlip} flipDirection='horizontal' infinite={true}>
                 <TaskCard key='front' task={task} isFlippable={flippable} onClick={handleCardClick}/>
-                {(task.isComplete) ? (
-                    <CompletionCard key='back' points={task.rewardPoints} onClick={handleCardClick}/>
+                {(isEditCard) ? (
+                    <EditTaskCard task={task} flipBack={() => setIsFlip(false)}/>
                 ) : (
-                    <QuestionCard key='back' taskTitle={task.title} onChooseOption={handleChooseOption}/>
+                    (task.isComplete) ? (
+                        <CompletionCard key='back' points={task.rewardPoints} onClick={handleCardClick}/>
+                    ) : (
+                        <QuestionCard key='back' taskTitle={task.title} onChooseOption={handleChooseOption}/>
+                    )
                 )}
             </ReactCardFlip>
         </CSSTransition>

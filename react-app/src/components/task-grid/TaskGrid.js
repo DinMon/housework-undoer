@@ -3,6 +3,7 @@ import { complete } from '../../domain/Task'
 import FlipTaskCard from '../task-card/FlipTaskCard'
 import { useUserLogged } from '../../App'
 import firebase from '../../firebase'
+import { ADMIN_USER } from '../../domain/User'
 
 export const REMOVE_TASK_DELAY = 2000
 
@@ -83,7 +84,8 @@ function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
             {
                 taskGridtasks && taskGridtasks.map((task) => {
                     return (
-                        <FlipTaskCard key={task.id} task={task} completeTask={completeTask} flippable={flippableTask} />
+                        <FlipTaskCard key={task.id} task={task} isEditCard={userLoggedIn.role === ADMIN_USER}
+                            completeTask={completeTask} flippable={flippableTask} />
                     ) 
                 })
             }

@@ -29,7 +29,7 @@ function PasswordCard({ toggleSelf }) {
             <PasswordInput onPasswordChange={onPasswordChange} error={error}/>
             {error && <div className='accent-text form-error'>{error}</div>}
             <div className='password-card-btn-stack'>
-                <button className='empty-btn' onClick={() => toggleSelf(false)}>Cancel</button>
+                <Button className='empty-btn' onClick={() => toggleSelf(false)}>Cancel</Button>
                 <Button className='fill-btn extended-btn' onClick={savePassword} isLoading={loading}>Save</Button>
             </div>
         </div>
