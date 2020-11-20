@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { complete } from '../../domain/Task'
+import { complete, createTask, setStatus, NEW_TASK, EDIT_TASK } from '../../domain/Task'
 import FlipTaskCard from '../task-card/FlipTaskCard'
 import { useUserLogged } from '../../App'
 import firebase from '../../firebase'
 import { ADMIN_USER } from '../../domain/User'
+import NewTaskCard from '../task-card/NewTaskCard'
 
 export const REMOVE_TASK_DELAY = 2000
 
@@ -11,6 +12,7 @@ function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
     const { userLoggedIn, setUserLoggedIn } = useUserLogged()
     const [taskGridtasks, setTaskGridTasks] = useState([])
     const [completedTask, setCompletedTask] = useState(null)
+    const [newTask, setNewTask] = useState(null)
 
     useEffect(() => {
         if (!completedTask) {
@@ -79,16 +81,23 @@ function TaskGrid({ tasks = [], flippableTask = true, className = '' }) {
         setTaskGridTasks(filteredTasks)  
     }
 
+    function createNewTask() {
+        const task = setStatus(userLoggedIn, createTask({ id: -1, title: '', rewardPoints: 0, isComplete: false }), NEW_TASK)
+        setNewTask(task)
+    }
+
     return (
         <div className={`task-grid ${className}`}>
             {
-                taskGridtasks && taskGridtasks.map((task) => {
+                taskGridtasks && ((newTask) ? [...taskGridtasks, newTask] : taskGridtasks).map((task) => {
                     return (
-                        <FlipTaskCard key={task.id} task={task} isEditCard={userLoggedIn.role === ADMIN_USER}
+                        <FlipTaskCard key={task.id} resetNewTask={() => setNewTask(null)}
+                            task={task} isAdmin={userLoggedIn.role === ADMIN_USER}
                             completeTask={completeTask} flippable={flippableTask} />
                     ) 
                 })
             }
+            {userLoggedIn.role === ADMIN_USER && <NewTaskCard onClick={createNewTask}/>}
         </div>
     )
 }

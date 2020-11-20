@@ -3,8 +3,10 @@ import Card from './Card'
 import Button from '../Button'
 import updateTask from '../../api/task/updateTask'
 import deleteTask from '../../api/task/deleteTask'
+import { setTaskReward, EDIT_TASK, createTask } from '../../domain/Task'
+import createNewTask from '../../api/task/createNewTask'
 
-function EditTaskCard({ task, flipBack, className, ...rest }) {
+function EditTaskCard({ task, resetNewTask, isExistingTask, flipBack, className, ...rest }) {
     const [saveLoading, setSaveLoading] = useState(false)
     const [deleteLoading, setDeleteLoading] = useState(false)
     const [title, setTitle] = useState('')
@@ -15,15 +17,28 @@ function EditTaskCard({ task, flipBack, className, ...rest }) {
         setReward(task.rewardPoints)        
     }, [])
 
-    async function saveTask(task, title, rewardPoints) {
+    async function saveTask(isNewTask, task, title, rewardPoints) {
         try {
             setSaveLoading(true)
-            await updateTask({
-                ...task,
-                title,
-                rewardPoints
-            })
-            setSaveLoading(false)
+            if (isNewTask) {
+                const { rewardPoints, isComplete } = setTaskReward(task, reward)
+                await createNewTask({
+                    completedBy: null,
+                    completedDate: null,
+                    isComplete,
+                    rewardPoints,
+                    title,
+                    status: EDIT_TASK
+                })
+                resetNewTask()
+            } else {
+                await updateTask({
+                    ...task,
+                    title,
+                    rewardPoints
+                })
+                setSaveLoading(false)
+            }
         } catch (error) {
             console.log(error) 
         }
@@ -66,9 +81,10 @@ function EditTaskCard({ task, flipBack, className, ...rest }) {
             <div className='edit-card-sub-container'>
                 <div className='edit-card-btn-stack'>
                     <Button className='empty-btn' onClick={flipBack}>Cancel</Button>
-                    <Button className='fill-btn' onClick={() => saveTask(task, title, reward)} isLoading={saveLoading}>Save</Button>
+                    <Button className='fill-btn' onClick={() => saveTask(!isExistingTask, task, title, reward)} isLoading={saveLoading}>Save</Button>
                 </div>
-                <Button className='fill-btn danger-btn' onClick={() => removeTask(task && task.id)} isLoading={deleteLoading}>Delete 💀</Button>
+                {isExistingTask && (
+                    <Button className='fill-btn danger-btn' onClick={() => removeTask(task && task.id)} isLoading={deleteLoading}>Delete 💀</Button>)}
             </div>
         </div>
     )

@@ -203,6 +203,14 @@ body {
   padding: 0.5rem;
 }
 
+/* New Task Card */
+.new-task-card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px dashed #FF8933;
+}
+
 /* Task Grid */
 .task-grid {
   display: flex;
@@ -308,6 +316,7 @@ body {
 
 .borderless-textbox {
   border: none;
+  width: 100%;
 }
 
 .password-textbox {
