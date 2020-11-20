@@ -5,13 +5,14 @@ import JackImg from '../assets/users/Jack@x2.png'
 export const ADMIN_USER = 'admin'
 export const REGULAR_USER = 'regular'
 
-export function createUser({id, name, age, role}) {
+export function createUser({id, name, age, role, coins}) {
     return {
         id,
         name,
         age,
         role,
-        image: getUserImage(name)
+        image: getUserImage(name),
+        coins
     }
 }
 

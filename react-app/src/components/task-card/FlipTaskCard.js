@@ -36,7 +36,7 @@ function FlipTaskCard({ task, completeTask, flippable = true }) {
     return (
         <CSSTransition in={task.isComplete} timeout={REMOVE_TASK_DELAY} classNames="remove-fade">
             <ReactCardFlip isFlipped={isFlip} flipDirection='horizontal' infinite={true}>
-                <TaskCard key='front' task={task} onClick={handleCardClick}/>
+                <TaskCard key='front' task={task} isFlippable={flippable} onClick={handleCardClick}/>
                 {(task.isComplete) ? (
                     <CompletionCard key='back' points={task.rewardPoints} onClick={handleCardClick}/>
                 ) : (
