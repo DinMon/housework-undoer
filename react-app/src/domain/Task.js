@@ -1,15 +1,17 @@
-export function createTask({id, title, rewardPoints}) {
+export function createTask({id, title, rewardPoints, isComplete, completedDate, completedBy}) {
     return {
         id,
         title,
         rewardPoints,
         colour: getColour(rewardPoints),
-        isComplete: false
+        isComplete: isComplete,
+        completedDate: completedDate,
+        completedBy: completedBy
     }
 }
 
-export function complete(task) {
-    return { ...task, isComplete: true}
+export function complete(task, userId) {
+    return { ...task, isComplete: true, completedBy: userId}
 }
 
 function getColour(points) {
