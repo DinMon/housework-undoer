@@ -1,7 +1,9 @@
-import React, { useState, useContext } from 'react';
-import { BrowserRouter as Router, Switch, Route, Redirect } from 'react-router-dom'
+import React, { useState, useContext, useEffect } from 'react';
+import { Switch, Route, Redirect } from 'react-router-dom'
 import LoginPage from './pages/LoginPage';
 import DashboardPage from './pages/DashboardPage';
+import { useHistory } from 'react-router-dom'
+import { signOut, authListener } from './api/authentication/authenticateUser'
 
 const UserLoginContext = React.createContext(null)
 
@@ -10,32 +12,39 @@ export function useUserLogged() {
 }
 
 function App() {
+    const history = useHistory()
 	const [userLoggedIn, setUserLoggedIn] = useState(null)
 
+	useEffect(() => {
+		authListener(signUserIn)
+	}, [])
+
+	function signUserIn(user) {
+		setUserLoggedIn(user)
+		if (user) {
+            history.replace('/')
+		}
+	}
+
 	function signUserOut() {
-		setUserLoggedIn(null)
+		signOut()
 	}
 
 	return (
-		<Router>
-			<UserLoginContext.Provider value={{userLoggedIn, signUserOut }}>
-				<Switch>
-					<Route exact path="/">
-						{userLoggedIn ? (
-							<DashboardPage />
-						): (
-							<Redirect to="/login" />
-						)}
-					</Route>
-					<Route path='/login'>
-						<LoginPage logUserIn={setUserLoggedIn}/>
-					</Route>
-					<Route path='/secure-login'>
-						<div>Password</div>
-					</Route>
-				</Switch>
-			</UserLoginContext.Provider>
-		</Router>
+		<UserLoginContext.Provider value={{userLoggedIn, signUserOut }}>
+			<Switch>
+				<Route exact path="/">
+					{userLoggedIn ? (
+						<DashboardPage />
+					): (
+						<Redirect to="/login" />
+					)}
+				</Route>
+				<Route path='/login'>
+					<LoginPage />
+				</Route>
+			</Switch>
+		</UserLoginContext.Provider>
 	)
 }
 

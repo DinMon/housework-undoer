@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { useHistory } from 'react-router-dom'
 import { createUser, ADMIN_USER } from '../domain/User'
 import RoundedAvatar from '../components/RoundedAvatar'
 import LoadingAnimation from '../components/LoadingAnimation'
-import firebase from 'firebase'
+import firebase from '../firebase'
+import PasswordAvatar from '../components/PasswordAvatar';
+import { signIn } from '../api/authentication/authenticateUser'
 
-function LoginPage({ logUserIn }) {
-    const history = useHistory()
+function LoginPage() {
     const [users, setUsers] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [adminUser, setAdminUser] = useState(null)
 
     useEffect(() => {
         function fetchUsers() {
@@ -29,11 +30,14 @@ function LoginPage({ logUserIn }) {
 
     function onAvatarImgClick(user) {
         if (user.role === ADMIN_USER) {
-            history.push('/secure-login')
+            setAdminUser(user)
         } else {
-            history.replace('/')
+            logUser(user)
         }
-        logUserIn(user)
+    }
+
+    async function logUser(user) {
+        await signIn(user)
     }
 
     return (
@@ -42,10 +46,14 @@ function LoginPage({ logUserIn }) {
                 {isLoading ? (
                     <LoadingAnimation />
                 ): (
-                    <div className='users-container'>
-                        {users && users.map((user) =>
-                            (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}/>))}
-                    </div>
+                    (adminUser) ? (
+						<PasswordAvatar user={adminUser} onBack={() => setAdminUser(null)}/>
+                    ) : (
+                        <div className='users-container'>
+                            {users && users.map((user) =>
+                                (<RoundedAvatar key={user.id} user={user} onImgClick={() => onAvatarImgClick(user)}/>))}
+                        </div>
+                    )
                 )}
             </div>
             <div className='login-side-img'></div>
