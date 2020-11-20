@@ -1,6 +1,15 @@
-export const createTask = function userFactory({ title, rewardPoints = 0 }) {
-    const colour = getColour(rewardPoints)
-    return { title, rewardPoints, colour }
+export function createTask({id, title, rewardPoints}) {
+    return {
+        id,
+        title,
+        rewardPoints,
+        colour: getColour(rewardPoints),
+        isComplete: false
+    }
+}
+
+export function complete(task) {
+    return { ...task, isComplete: true}
 }
 
 function getColour(points) {

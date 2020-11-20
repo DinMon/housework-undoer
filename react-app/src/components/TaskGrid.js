@@ -1,31 +1,56 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { createTask } from '../domain/Task'
-import { createTaskHolder, DESC } from '../domain/TaskHolder'
-import TaskCard from './TaskCard';
+import React, { useEffect, useState } from 'react'
+import { v4 as uuidv4 } from 'uuid';
+import { complete, createTask } from '../domain/Task'
+import FlipTaskCard from './FlipTaskCard'
 
-function TaskGrid({}) {
-    const taskHolder = useRef(null)
+export const REMOVE_TASK_DELAY = 1000
+
+function TaskGrid() {
     const [tasks, setTasks] = useState([])
 
     useEffect(() => {
-        taskHolder.current = createTaskHolder()
-            .add(createTask({ title: 'Find dad\'s wallet', rewardPoints: 125 }))
-            .add(createTask({ title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100 }))
-            .add(createTask({ title: 'Wash the dishes', rewardPoints: 75 }))
-            .add(createTask({ title: 'Make your bed in the morning', rewardPoints: 20 }))
-            .add(createTask({ title: 'Fix the pillowcase', rewardPoints: 50 }))
-            .add(createTask({ title: 'Water the plants', rewardPoints: 80 }))
-            .sortBy(DESC)
+        setTasks([
+            createTask({ id: uuidv4(), title: 'Put away old toys to white boxes on the balconey', rewardPoints: 100 }),
+            createTask({ id: uuidv4(), title: 'Find dad\'s wallet', rewardPoints: 125 }),
+            createTask({ id: uuidv4(), title: 'Wash the dishes', rewardPoints: 75 }),
+            createTask({ id: uuidv4(), title: 'Make your bed in the morning', rewardPoints: 20 }),
+            createTask({ id: uuidv4(), title: 'Fix the pillowcase', rewardPoints: 50 }),
+            createTask({ id: uuidv4(), title: 'Water the plants', rewardPoints: 80 }),
+        ]);
 
-        const { tasks } = taskHolder.current
-        setTasks(tasks)
-    }, [])
+    }, []);
+
+    function completeTask(completedTask) {
+        const newTasks = tasks.map(function completeSingleTask(t) {
+
+            if(t.id === completedTask.id) {
+                return complete(t)
+            }
+
+            return t
+        })
+
+        setTasks(newTasks);
+
+        function removeCompletedTask(taskList, id){
+            const filteredTasks = taskList.filter(function getNonCompletedTask(task) {
+                return task.id !== id
+            })  
+
+            console.log(filteredTasks)
+            setTasks(filteredTasks)  
+        }
+
+        setTimeout(() => removeCompletedTask(newTasks, completedTask.id), REMOVE_TASK_DELAY)
+    }
 
     return (
         <div className='task-grid'>
             {
-                tasks && tasks.map((task, i) => {
-                    return <TaskCard key={i} task={task}/>
+                tasks && tasks.map((task) => {
+                    return (
+                        <FlipTaskCard key={task.id} task={task} completeTask={completeTask} />
+                    ) 
                 })
             }
         </div>
