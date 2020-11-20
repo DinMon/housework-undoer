@@ -59,6 +59,10 @@ body {
   padding: 0 0.5rem;
 }
 
+.pointer {
+  cursor: pointer;
+}
+
 .task-option-btn {
   display: flex;
   flex-direction: column;
@@ -70,6 +74,8 @@ body {
   background: none;
   border: none;
   padding: 0;
+
+  cursor: pointer;
 }
 
 .task-option-btn.cross-option {

@@ -18,7 +18,7 @@ function App() {
 
 	return (
 		<Router>
-			<UserLoginContext.Provider value={{userLoggedIn, signUserOut }}>
+			<UserLoginContext.Provider value={{userLoggedIn, setUserLoggedIn, signUserOut }}>
 				<Switch>
 					<Route exact path="/">
 						{userLoggedIn ? (
